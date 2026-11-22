@@ -129,9 +129,9 @@ function render(){const list=document.getElementById('postList');list.replaceChi
 const recipes=document.getElementById('sharedRecipes');recipes.replaceChildren();if(!current.recipes.length)recipes.textContent='아직 공유된 레시피가 없습니다.';current.recipes.slice().reverse().forEach(r=>renderRecipeCard(recipes,r));const v=document.getElementById('voteResults');v.replaceChildren();const counts=current.votes.counts||{};v.textContent='총 '+(current.votes.total||0)+'표 · '+Array.from({length:6},(_,i)=>(i+1)+'조 '+(counts[(i+1)+'조']||0)+'표').join(' | ')}
 async function refresh(){try{const r=await jsonp('all');if(!r.ok)throw Error(r.error||'서버 오류');current=r.data;render();status('postStatus','공유 게시판 연결됨 · 마지막 조회 '+new Date().toLocaleTimeString('ko-KR'))}catch(e){status('postStatus','새 글 조회 실패: '+e.message)}}
 async function waitFor(predicate){for(let i=0;i<5;i++){await new Promise(r=>setTimeout(r,1300));const r=await jsonp('all');if(r.ok){current=r.data;render();if(predicate())return true}}return false}
-async function addPost(){const name=document.getElementById('postName').value.trim()||'익명';const content=document.getElementById('postText').value.trim();if(!content){alert('내용을 입력해 주세요.');return}const btn=document.querySelector('#stories .boardform button');btn.disabled=true;status('postStatus','저장 중...');try{const old=new Set(current.posts.map(p=>p.id));await submit('addPost',{author:name,topic:'자유 이야기',content});const ok=await waitFor(()=>current.posts.some(p=>!old.has(p.id)&&p.participantId===participantId()&&p.content===content));if(!ok)throw Error('저장 확인이 되지 않았습니다. 시트를 확인한 뒤 다시 시도해 주세요.');document.getElementById('postText').value='';status('postStatus','글이 모두에게 공유됐어요!')}catch(e){status('postStatus','저장 확인 실패: '+e.message)}finally{btn.disabled=false}}
+async function addPost(){const name=document.getElementById('postName').value.trim()||'익명';const content=document.getElementById('postText').value.trim();if(!content){alert('내용을 입력해 주세요.');return}const btn=document.querySelector('#stories .boardform button');btn.disabled=true;status('postStatus','저장 중...');try{const old=new Set(current.posts.map(p=>p.id));const editToken=newEditToken();await submit('addPost',{author:name,topic:'자유 이야기',content,editToken});const ok=await waitFor(()=>current.posts.some(p=>!old.has(p.id)&&p.content===content));const saved=current.posts.find(p=>!old.has(p.id)&&p.content===content);if(ok&&saved)rememberEditToken('post',saved.id,editToken);if(!ok)throw Error('저장 확인이 되지 않았습니다. 시트를 확인한 뒤 다시 시도해 주세요.');document.getElementById('postText').value='';status('postStatus','글이 모두에게 공유됐어요!')}catch(e){status('postStatus','저장 확인 실패: '+e.message)}finally{btn.disabled=false}}
 async function toggleLike(postId,btn){btn.disabled=true;try{const before=current.likes.some(l=>l.postId===postId&&l.participantId===participantId());await submit('toggleLike',{postId});const ok=await waitFor(()=>current.likes.some(l=>l.postId===postId&&l.participantId===participantId())!==before);if(!ok)alert('공감 변경이 확인되지 않았어요. 잠시 후 다시 확인해 주세요.')}catch(e){alert('공감 오류: '+e.message)}finally{btn.disabled=false}}
-async function saveRecipe(){syncSupportSelection();const get=id=>document.getElementById(id).value.trim();const group=get('team');if(!group||!get('objective')){alert('조 이름과 학습 목표를 입력해 주세요.');return}const data={group,author:'조별 공동 작성',topic:'우리는 동물농장',level:get('students'),goal:(document.getElementById('recipeLesson').selectedIndex+1)+'차시 · '+get('objective'),activity:'[원본] '+LESSONS[Number(get('recipeLesson'))].activities.join(' / ')+' | [유지] '+get('keep'),changes:'[재구성] '+get('change'),sequence:get('flow'),summary:get('intro'),support:'',concepts:''};const t='[우리는 동물농장 · 수업 레시피]\n'+Object.entries(data).map(([k,v])=>k+': '+v).join('\n');const el=document.getElementById('recipeResult');el.hidden=false;el.textContent='저장 중...';try{const old=new Set(current.recipes.map(r=>r.id));await submit('addRecipe',data);const ok=await waitFor(()=>current.recipes.some(r=>!old.has(r.id)&&r.participantId===participantId()&&r.group===group));if(!ok)throw Error('시트 저장 확인이 되지 않았습니다.');el.textContent='공유 시트에 저장 완료!\n\n'+t;try{await navigator.clipboard.writeText(t)}catch(e){}}catch(e){el.textContent='저장 확인 실패: '+e.message+'\n내용은 아래에 남겨 두었어요.\n'+t}}
+async function saveRecipe(){syncSupportSelection();const get=id=>document.getElementById(id).value.trim();const group=get('team');if(!group||!get('objective')){alert('조 이름과 학습 목표를 입력해 주세요.');return}const data={group,author:'조별 공동 작성',topic:'우리는 동물농장',level:get('students'),goal:(document.getElementById('recipeLesson').selectedIndex+1)+'차시 · '+get('objective'),activity:'[원본] '+LESSONS[Number(get('recipeLesson'))].activities.join(' / ')+' | [유지] '+get('keep'),changes:'[재구성] '+get('change'),sequence:get('flow'),summary:get('intro'),support:'',concepts:''};const t='[우리는 동물농장 · 수업 레시피]\n'+Object.entries(data).map(([k,v])=>k+': '+v).join('\n');const el=document.getElementById('recipeResult');el.hidden=false;el.textContent='저장 중...';try{const old=new Set(current.recipes.map(r=>r.id));const editToken=newEditToken();await submit('addRecipe',{...data,editToken});const ok=await waitFor(()=>current.recipes.some(r=>!old.has(r.id)&&r.group===group));const saved=current.recipes.find(r=>!old.has(r.id)&&r.group===group);if(ok&&saved)rememberEditToken('recipe',saved.id,editToken);if(!ok)throw Error('시트 저장 확인이 되지 않았습니다.');el.textContent='공유 시트에 저장 완료!\n\n'+t;try{await navigator.clipboard.writeText(t)}catch(e){}}catch(e){el.textContent='저장 확인 실패: '+e.message+'\n내용은 아래에 남겨 두었어요.\n'+t}}
 async function castVote(){const group=document.getElementById('voteGroup').value;if(!group){alert('조를 선택해 주세요.');return}const btn=document.querySelector('#ideas .boardform button');btn.disabled=true;status('voteStatus','투표 저장 중...');try{const before=current.votes.total||0;await submit('vote',{group});const ok=await waitFor(()=>current.votes.total>before);if(!ok)throw Error('투표 저장 여부를 확인하지 못했어요.');localStorage.setItem('seed_voted_v1','yes');status('voteStatus','투표가 접수됐어요!')}catch(e){status('voteStatus','투표 확인 필요: '+e.message+' 이미 투표했거나 저장에 실패했을 수 있습니다. 시트를 확인해 주세요.')}finally{btn.disabled=localStorage.getItem('seed_voted_v1')==='yes'}}
 if(localStorage.getItem('seed_voted_v1')==='yes')document.querySelector('#ideas .boardform button').disabled=true;
 refresh();setInterval(()=>{if(!document.hidden)refresh()},8000);
@@ -182,4 +182,64 @@ document.querySelectorAll('.support-chip').forEach(button=>{
 });
 document.getElementById('supportExtra').addEventListener('input',syncSupportSelection);
 syncSupportSelection();
-</script></body></html>
+</script><script>
+// Local editing credentials are intentionally not included in public GET responses.
+const EDIT_KEYS_STORAGE='seed_own_edit_keys_v13';
+function editKeys(){try{return JSON.parse(localStorage.getItem(EDIT_KEYS_STORAGE)||'{}')}catch(e){return {}}}
+function newEditToken(){const a=new Uint8Array(32);crypto.getRandomValues(a);return Array.from(a,x=>x.toString(16).padStart(2,'0')).join('')}
+function rememberEditToken(type,id,token){const o=editKeys();o[type+':'+id]=token;localStorage.setItem(EDIT_KEYS_STORAGE,JSON.stringify(o))}
+function ownToken(type,id){return editKeys()[type+':'+id]||null}
+async function changeRecord(type,item,remove){
+ const token=ownToken(type,item.id);if(!token)return;
+ if(remove&&!confirm('이 '+(type==='post'?'게시글':'수업 레시피')+'을 삭제할까요? 삭제 후 복구는 운영자에게 문의해야 합니다.'))return;
+ const data={id:item.id,editToken:token};
+ if(!remove){
+  if(type==='post'){
+   const author=prompt('작성자 이름',item.author);if(author===null)return;
+   const content=prompt('게시글 내용',item.content);if(content===null)return;
+   if(!content.trim()){alert('내용을 입력해 주세요.');return}
+   Object.assign(data,{author,topic:item.topic||'자유 이야기',content});
+  }else{
+   const fields=[['group','조 이름'],['author','작성자'],['topic','수업 주제'],['level','학생 수준'],['concepts','학습 요소'],['goal','학습 목표'],['activity','유지할 활동'],['changes','재구성·추가 지원'],['sequence','수업 흐름'],['support','기타 지원'],['summary','한 줄 소개']];
+   for(const [key,label] of fields){const v=prompt(label,item[key]||'');if(v===null)return;data[key]=v}
+  }
+ }
+ const action=type==='post'?(remove?'deletePost':'editPost'):(remove?'deleteRecipe':'editRecipe');
+ try{
+  await submit(action,data);
+  // no-cors hides the response; verify the exact record state after refreshing.
+  const changed=await waitFor(()=>{
+   const arr=type==='post'?current.posts:current.recipes;
+   const updated=arr.find(x=>x.id===item.id);
+   if(remove)return !updated;
+   if(!updated)return false;
+   return type==='post'?updated.content===data.content&&updated.author===data.author:
+    updated.group===data.group&&updated.summary===data.summary&&updated.goal===data.goal&&updated.changes===data.changes;
+  });
+  if(!changed)throw Error('변경 확인이 되지 않았습니다. 잠시 후 시트에서 확인해 주세요.');
+  if(remove){const o=editKeys();delete o[type+':'+item.id];localStorage.setItem(EDIT_KEYS_STORAGE,JSON.stringify(o))}
+  alert(remove?'삭제 완료!':'수정 완료!');
+ }catch(e){alert('처리 확인 필요: '+e.message)}
+}
+function addOwnerControls(parent,type,item){
+ if(!ownToken(type,item.id))return;
+ const wrap=document.createElement('div');wrap.className='owner-actions';
+ for(const [label,remove] of [['✏️ 수정',false],['🗑️ 삭제',true]]){
+  const b=document.createElement('button');b.type='button';b.textContent=label;b.className='owner-action-btn';
+  b.addEventListener('click',()=>changeRecord(type,item,remove));wrap.appendChild(b);
+ }
+ parent.appendChild(wrap);
+}
+const originalRender=render;
+render=function(){
+ originalRender();
+ const posts=[...document.querySelectorAll('#postList .postitem')];
+ current.posts.slice().reverse().forEach((item,i)=>{if(posts[i])addOwnerControls(posts[i],'post',item)});
+ const cards=[...document.querySelectorAll('#sharedRecipes .recipe-share-card')];
+ current.recipes.slice().reverse().forEach((item,i)=>{if(cards[i])addOwnerControls(cards[i],'recipe',item)});
+};
+</script><style>
+.owner-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid #ece7f5}
+.owner-action-btn{border:1px solid #dcd3ed;background:white;border-radius:12px;padding:7px 12px;color:#51456d;cursor:pointer;font:inherit;font-size:.85rem}
+.owner-action-btn:hover{background:#f3edff}
+</style></body></html>
