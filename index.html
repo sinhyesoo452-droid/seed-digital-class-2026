@@ -57,19 +57,16 @@
 </section>
 <section class="section" id="apk"><h2>쥬니버스쿨 APK 설치</h2><p>행사에서 사용할 앱 설치 파일과 안내 자료입니다. 설치 전 기기 운영체제 및 기관 보안 정책을 확인해 주세요.</p><div class="linktiles"><a href="https://drive.google.com/file/d/1QCZeeRhANEBeXJWXM5aDexHm7ZzhjE2G/view" rel="noopener" target="_blank">APK 다운로드 파일 열기 ↗</a><a href="https://drive.google.com/file/d/1gGIyV1SDhwal_bMfh6wwcpo-PxcICPKW/view" rel="noopener" target="_blank">관련 ZIP 자료 열기 ↗</a><a href="https://drive.google.com/drive/folders/1YOHEK0PrUNleycZHFnWS2S2N61BmhSR7" rel="noopener" target="_blank">쥬니버스쿨 앱 자료 폴더 ↗</a></div><p class="note">외부 Google Drive 링크로 연결됩니다. 접근 권한은 행사 전에 확인해 주세요.</p></section>
 <section class="section" id="resources"><h2>실습 자료실</h2><p>SeeD 수업안과 활동지, 행사 실습 자료를 확인하세요.</p><div class="linktiles"><a href="https://drive.google.com/file/d/1caUlmk7q8sW63tfA-UDnZjm7dNyRBw9p/view" rel="noopener" target="_blank">교재 최종본 ↗</a><a href="https://drive.google.com/file/d/1fNPefoL1BB8qTR5lhP8fwFkSjQuuw-Jr/view" rel="noopener" target="_blank">교재 PPT ↗</a><a href="https://drive.google.com/drive/folders/1CnLBINd80JTmdwDw7b7J8EmX0juzxVUq" rel="noopener" target="_blank">3차시 예제파일 ↗</a><a href="https://drive.google.com/drive/folders/1T9Xs06-9xdm9OpVDBgkcvJvYuQwajP7T" rel="noopener" target="_blank">5차시 예제파일 ↗</a></div></section>
-<section class="section" id="recommend"><h2>🐾 우리 반 맞춤 활동 추천</h2><p>SeeD 5차시 활동 또는 쥬니버스쿨 1·2단계 활동을 학생 특성에 맞춰 찾아보세요.</p>
-<div class="recommend-mode" role="group" aria-label="추천 자료 선택"><button type="button" class="mode-active" id="modeSeed" onclick="setRecommendMode('seed')">SeeD 5차시 추천</button><button type="button" id="modeJuniver" onclick="setRecommendMode('juniver')">쥬니버스쿨 활동 찾기</button></div>
+<section class="section" id="recommend"><h2>🐾 우리 반 맞춤 활동 추천</h2><p>학생 수준과 하고 싶은 수업을 입력하면 SeeD 수업 재구성 또는 쥬니버스쿨 콘텐츠를 추천해 드려요.</p>
+<div class="recommend-mode" role="group" aria-label="추천 자료 선택"><button type="button" class="mode-active" id="modeSeed" onclick="setRecommendMode('seed')">SeeD 5차시 추천</button><button type="button" id="modeJuniver" onclick="setRecommendMode('juniver')">쥬니버스쿨 맞춤 추천</button></div>
 <div id="juniverRecommend" hidden>
+<p class="note">하고 싶은 수업과 학생이 실제로 할 수 있는 활동을 입력하면, 쥬니버스쿨 1·2단계 콘텐츠에서 관련 활동을 추천합니다. 과목이나 콘텐츠 제목을 미리 고를 필요가 없습니다.</p>
 <div class="formgrid">
-<div><label for="juniverStage">① 단계 선택</label><select id="juniverStage" onchange="refreshJuniverSubjects()"><option value="">단계를 선택해 주세요</option><option value="1단계">1단계</option><option value="2단계">2단계</option></select></div>
-<div><label for="juniverSubject">② 과목 선택</label><select id="juniverSubject" onchange="refreshJuniverContent()"><option value="">과목을 선택해 주세요</option></select></div>
-<div><label for="juniverTheme">④ 수업 주제 선택 (선택)</label><select id="juniverTheme" onchange="chooseJuniverTheme()"><option value="">직접 입력 또는 전체 주제</option><option>동물과 생물</option><option>분류와 데이터</option><option>순서와 알고리즘</option><option>인공지능과 음성인식</option><option>수와 숫자</option><option>색과 모양</option><option>감정과 의사소통</option><option>언어와 이야기</option><option>환경과 자연</option><option>방향과 공간</option><option>음악과 소리</option></select></div>
-<div><label for="juniverTopic">수업 주제 직접 입력 (선택)</label><input id="juniverTopic" placeholder="예: 동물 분류, 감정 표현, 수 세기" maxlength="140"></div>
-<div><label for="juniverLevel">⑤ 학생 참여 수준</label><select id="juniverLevel" onchange="chooseJuniverLevel()"><option value="">수준을 선택해 주세요</option><option value="그림 선택 가능, 짧은 한 단계 지시 수행">그림·소리 중심으로 참여</option><option value="짧은 단어와 문장 이해 가능">짧은 단어·문장 이해 가능</option><option value="간단한 문장으로 설명 가능">간단한 문장으로 설명 가능</option><option value="custom">학생 특성 직접 입력</option></select></div>
-<div style="grid-column:1/-1"><label for="juniverStudent">학생의 실제 참여 특성 (선택·보완)</label><textarea id="juniverStudent" rows="3" maxlength="500" placeholder="예: 글자 읽기는 어렵지만 그림 선택 가능, 1단계 지시 수행, 태블릿 터치 가능"></textarea></div>
-<div style="grid-column:1/-1"><label for="juniverContent">③ 제목 - 학습목표 선택</label><select id="juniverContent" onchange="previewJuniverContent()"><option value="">먼저 과목을 선택해 주세요</option></select><p class="note" id="juniverContentPreview">과목을 선택한 다음 제목과 학습목표를 확인하세요.</p></div>
+<div style="grid-column:1/-1"><label for="juniverTopic">① 하고 싶은 수업·활동 <span aria-hidden="true">*</span></label><textarea id="juniverTopic" rows="3" maxlength="250" placeholder="예: 친구와 감정을 표현하고 상황에 맞는 인사말을 연습하고 싶어요. / 1부터 5까지 수를 세고 싶어요."></textarea></div>
+<div><label for="juniverLevel">② 학생 참여 수준</label><select id="juniverLevel" onchange="chooseJuniverLevel()"><option value="">직접 입력 또는 수준 선택</option><option value="그림을 보고 선택할 수 있고, 한 단계 지시를 수행할 수 있어요.">그림·소리 중심, 한 단계 지시 수행</option><option value="짧은 단어와 문장을 이해하고 선택할 수 있어요.">짧은 단어·문장 이해 가능</option><option value="간단한 문장으로 설명하고 두 단계 이상의 활동을 수행할 수 있어요.">간단한 문장 설명·복합 활동 가능</option><option value="custom">직접 입력하기</option></select></div>
+<div style="grid-column:1/-1"><label for="juniverStudent">학생이 할 수 있는 것과 필요한 지원 <span aria-hidden="true">*</span></label><textarea id="juniverStudent" rows="3" maxlength="500" placeholder="예: 글자를 읽기 어렵지만 그림 2개 중 하나를 고를 수 있고, 교사의 한 단계 안내를 따라 태블릿을 터치할 수 있어요."></textarea></div>
 </div>
-<button type="button" class="wide" onclick="recommendJuniver()">🔎 쥬니버스쿨 맞춤 활동 추천받기</button>
+<button type="button" class="wide" onclick="recommendJuniver()">🔎 우리 반에 맞는 쥬니버스쿨 활동 추천받기</button>
 <div id="juniverResults" class="juniver-results" aria-live="polite"></div>
 <p class="note">2024년 제공된 1·2단계 활동 목록을 기반으로 한 키워드 추천입니다. 현재 앱 제공 여부와 공개 가능한 범위는 운영기관 확인이 필요합니다. 학생 이름·진단명 등 개인정보는 입력하지 마세요.</p>
 </div><div id="seedRecommend">
@@ -435,63 +432,51 @@ function studentAdviceJuniver(t){
  if(!a.length)a.push('그림 2개 중 선택하기 → 교사와 함께 수행하기 → 독립 수행하기 순으로 난이도 조정하기');
  return a;
 }
-function refreshJuniverSubjects(){
- const stage=document.getElementById('juniverStage').value,sel=document.getElementById('juniverSubject');
- sel.replaceChildren(new Option(stage?'과목을 선택해 주세요':'먼저 단계를 선택해 주세요',''));
- [...new Set(JUNIVER_SCHOOL_CATALOG.filter(x=>x.stage===stage).map(x=>x.subject))].sort((a,b)=>a.localeCompare(b,'ko')).forEach(x=>sel.add(new Option(x,x)));
- sel.disabled=!stage;
- refreshJuniverContent();
+function chooseJuniverLevel(){
+ const v=document.getElementById('juniverLevel').value;
+ const field=document.getElementById('juniverStudent');
+ if(v==='custom'){field.focus();return;}
+ if(v)field.value=v;
 }
-function refreshJuniverContent(){
- const stage=document.getElementById('juniverStage').value,subject=document.getElementById('juniverSubject').value,sel=document.getElementById('juniverContent');
- sel.replaceChildren(new Option(subject?'제목 - 학습목표를 선택해 주세요':'먼저 단계와 과목을 선택해 주세요',''));
- sel.disabled=!stage||!subject;
- JUNIVER_SCHOOL_CATALOG.forEach((item,i)=>{if(item.stage===stage&&item.subject===subject)sel.add(new Option(item.title+' - '+item.goal,i));});
- previewJuniverContent();
+function inferJuniverStage(t){
+ const q=normalizeJuniver(t);
+ if(/한 단계|1단계 지시|그림.{0,12}선택|글자.{0,12}어렵|읽기.{0,12}어렵|도움.{0,8}필요|교사.{0,8}도움|짧은 지시/.test(q))return '1단계';
+ if(/두 단계|2단계 이상|문장.{0,12}설명|독립.{0,8}수행|스스로.{0,8}설명|복합 활동/.test(q))return '2단계';
+ return '';
 }
-function previewJuniverContent(){
- const i=document.getElementById('juniverContent').value;
- document.getElementById('juniverContentPreview').textContent=i===''?'단계와 과목을 선택한 다음 제목과 학습목표를 확인하세요.':JUNIVER_SCHOOL_CATALOG[Number(i)].goal;
-}
-function chooseJuniverTheme(){const t=document.getElementById('juniverTheme').value;if(t)document.getElementById('juniverTopic').value=t;}
-function chooseJuniverLevel(){const v=document.getElementById('juniverLevel').value;if(v&&v!=='custom')document.getElementById('juniverStudent').value=v;else if(v==='custom')document.getElementById('juniverStudent').focus();}
-function initJuniverDropdowns(){refreshJuniverSubjects();}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initJuniverDropdowns);else initJuniverDropdowns();
 function recommendJuniver(){
  const topic=document.getElementById('juniverTopic').value.trim();
  const student=document.getElementById('juniverStudent').value.trim();
- const stageFilter=document.getElementById('juniverStage').value;
- const subjectFilter=document.getElementById('juniverSubject').value;
- const contentFilter=document.getElementById('juniverContent').value;
  const root=document.getElementById('juniverResults');root.replaceChildren();
- if(!stageFilter||!subjectFilter){root.textContent='단계와 과목을 먼저 선택해 주세요.';return;}
- if(!student){root.textContent='학생 참여 수준을 선택하거나 특성을 입력해 주세요.';return;}
- if(!topic&&contentFilter===''){root.textContent='제목 - 학습목표를 선택하거나 수업 주제를 입력해 주세요.';return;}
+ if(!topic){root.textContent='하고 싶은 수업이나 활동을 먼저 입력해 주세요.';document.getElementById('juniverTopic').focus();return;}
+ if(!student){root.textContent='학생이 할 수 있는 활동과 필요한 지원을 입력하거나 수준을 선택해 주세요.';document.getElementById('juniverStudent').focus();return;}
  const q=normalizeJuniver(topic),terms=expandJuniver(topic),words=tokensJuniver(topic);
+ const preferredStage=inferJuniverStage(student);
  const ranked=JUNIVER_SCHOOL_CATALOG.map((item,index)=>{
-  if(stageFilter&&item.stage!==stageFilter)return {...item,score:-1};
-  if(subjectFilter&&item.subject!==subjectFilter)return {...item,score:-1};
-  if(contentFilter!==''&&index!==Number(contentFilter))return {...item,score:-1};
   const title=normalizeJuniver(item.title),goal=normalizeJuniver(item.goal),subject=normalizeJuniver(item.subject);
-  let score=contentFilter!==''?100:(!q?1:(title.includes(q)?16:goal.includes(q)?11:0));
-  for(const term of terms){if(title.includes(term))score+=4;else if(goal.includes(term))score+=2;else if(subject.includes(term))score+=1;}
-  for(const term of words){if(title.includes(term))score+=4;else if(goal.includes(term))score+=2;}
-  return {...item,score};
- }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title,'ko')).slice(0,5);
+  let relevance=title.includes(q)?18:goal.includes(q)?14:0;
+  for(const term of terms){if(title.includes(term))relevance+=5;else if(goal.includes(term))relevance+=3;else if(subject.includes(term))relevance+=1;}
+  for(const term of words){if(title.includes(term))relevance+=4;else if(goal.includes(term))relevance+=2;}
+  const score=relevance>0?relevance+(preferredStage&&item.stage===preferredStage?3:0):0;
+  return {...item,index,score,relevance};
+ }).filter(x=>x.relevance>0).sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title,'ko')).slice(0,5);
  const h=document.createElement('h3');h.textContent=ranked.length?'추천 활동 '+ranked.length+'개':'관련 활동을 찾지 못했어요';root.append(h);
- if(!ranked.length){const p=document.createElement('p');p.textContent='다른 주제나 핵심 단어(예: 분류, 숫자, 방향, 순서, 음성인식)로 다시 검색해 보세요.';root.append(p);return;}
+ const expl=document.createElement('p');expl.className='note';expl.textContent='실제 콘텐츠 제목·학습목표와 입력한 주제의 키워드를 비교한 추천입니다. 학생 수준은 단계 우선순위와 지원 방법에 반영하며, 최종 적합성은 교사가 확인해 주세요.';root.append(expl);
+ if(!ranked.length){const p=document.createElement('p');p.textContent='수업의 핵심 낱말을 짧게 바꿔 다시 입력해 보세요. 예: 감정, 숫자, 분류, 방향, 순서, 색깔.';root.append(p);return;}
  const tips=studentAdviceJuniver(student);
  for(const [idx,item] of ranked.entries()){
   const card=document.createElement('article');card.className='juniver-card';
   const title=document.createElement('h4');title.textContent=(idx+1)+'. '+item.title;card.append(title);
-  const tag=document.createElement('p');tag.className='juniver-tag';tag.textContent='과목: '+item.subject;card.append(tag);
-  const goal=document.createElement('p');goal.textContent='학습 목표: '+item.goal;card.append(goal);
-  const why=document.createElement('p');why.textContent='추천 이유: 입력한 수업 주제와 활동 제목·학습목표의 관련성이 높습니다. 학생 특성에 따라 참여 방법을 조정해 활용할 수 있습니다.';card.append(why);
+  const tag=document.createElement('p');tag.className='juniver-tag';tag.textContent=item.stage+' · '+item.subject;card.append(tag);
+  const goal=document.createElement('p');goal.textContent='학습목표: '+item.goal;card.append(goal);
+  const why=document.createElement('p');why.textContent='추천 이유: 요청한 수업 주제와 활동 제목·학습목표에 관련된 표현이 있습니다.'+(preferredStage===item.stage?' 입력한 학생 참여 특성에 따라 이 단계를 우선 고려했습니다.':' 학생의 실제 수행 수준에 맞게 활동을 조정해 주세요.');card.append(why);
+  const support=document.createElement('strong');support.textContent='학생 수준에 맞춘 지원 방법';card.append(support);
   const ul=document.createElement('ul');for(const tip of tips){const li=document.createElement('li');li.textContent=tip;ul.append(li)}card.append(ul);
-  const note=document.createElement('p');note.className='note';note.textContent='활동은 쥬니버스쿨 앱에서 제목으로 찾아주세요. 개별 활동 바로가기 주소는 제공되지 않았습니다.';card.append(note);
+  const note=document.createElement('p');note.className='note';note.textContent='쥬니버스쿨 앱에서 활동 제목으로 찾아주세요. 개별 활동 바로가기 주소는 제공되지 않았습니다.';card.append(note);
   root.append(card);
  }
 }
+
 </script>
 <style>
 .recommend-mode{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 22px}
